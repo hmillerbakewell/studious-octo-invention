@@ -178,3 +178,92 @@ Regarding the Brown Corpus:
  - File size: 10.1 MB (text files, uncompressed)
  - Sentences: 57341 (57,341)
  - Words: 1014312 (1,014,312)
+
+# Plan of action
+
+We wish to identify the arities of any given POS.
+We will start with POS, and then move on to individual words later.
+We realise that in some cases certain parts of speech may have different arities, depending on context.
+As such we will therefore look for a sense of the probability distribution of arities for a given POS.
+
+ - We are expecting to have to reduce the number of POS tags down from 81.
+ - We are expecting to have to induce a bias of the form "Nouns have arity 1"
+ - We are expecting to have to remove problematic sentences
+ e.g. those that contain titles, quotations, or foreign words.
+
+### Cleanup: Stripping out all but POS
+
+For our initial research, we shall focus purely on the Parts Of Speech.
+
+
+### Round 1: POS by sentence length
+
+The first round will simply inform us:
+For a given POS, what are the lengths of sentences that contain that POS.
+If we link sentence length to sentence complexity, then this may give us a (weak) link
+between POS and complexity.
+We are asking this question to inform future questions, and to give us a benchmark against which we can gauge future outcomes.
+
+On my home desktop `Round1.py` took 150s to run.
+
+#### Method
+
+Our first attempt took every sentence in the POS_ONLY file, and formed a histogram of POS against sentence length.
+This gave us an output of 353 different POS recorded in the file; even after separating out negated and combined tags.
+The reason for such a large count of POS is the existence of the `-hl`, `-tl` and `-nc` tags.
+These tags denote the contextual information of titles, headlines and emphasised words respectively.
+
+Noteworthy changes:
+ - We have added the POS `SENTENCE` that records data for lengths of sentences
+ - We have changed the `,` tag to `COM` to avoid conflict with comma-delineation
+ - We append one final piece of data, which is the number of sentences containing hyphenated tags (`-hl`,`-tl`,`-nc`)
+
+The reason for this final statistic is to see how many lines are affected by these hyphenated tags.
+If there are very few we can ignore them as statistical noise.
+If there are a significant number then we shall have to decide whether or not to include them in our data.
+Our options for dealing with the hyphenated tags are:
+ - Leave them in place (dramatically increases the number of tags we are dealing with)
+ - Ignore just the hyphenated part (e.g. `nn-hl` becomes just `nn`)
+ - Drop the line that contains them
+
+#### Results
+
+The number of sentences with hyphenated tags was 12,234.
+This amounts to roughly 20% of our total number of sentences in the data.
+Dropping the lines that contain hyphenated tags seems excessive,
+however I am unwilling to decide between leaving them be and merging.
+My hesitation comes from the `-tl` tag; it indicates that the word is part of a title.
+Since, to my mind, it seems likely that titles will end up being treated in a similar way to nouns,
+I wish to keep the tags as they are, and move on to looking at bigrams of POS.
+
+### Round 2: Left and right bigrams
+
+The purpose of Round 1 was to get a handle on the breakdown by POS of the data available.
+Now we will start to take a look at how the POS are positioned relative to each other.
+
+It was at this point that I found the nltk python library.
+It does many of the things I want, but I don't know if it will do all of them.
+Certainly most of the things I intend to investigate could be built on top of nltk.
+
+#### Method
+
+We loop through each sentence, and keep track of each occurence of a 1-gram or 2-gram.
+
+#### Results
+
+Here are the top ten most common 1-grams and 2-grams:
+
+~~~
+nn	152522
+in	120572
+at	97965
+jj	64030
+.	60638
+COM	58156
+nns	55112
+at++nn	48393
+in++at	43274
+nn++in	42254
+~~~
+
+Recall that we have replaced `,` with `COM` for legibility.
