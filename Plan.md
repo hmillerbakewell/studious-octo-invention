@@ -310,6 +310,8 @@ An alternative is to use some human input, recalling that once we have enough ty
 That is; if a human choses the wrong type for a give POS (or does not allow for certain edge conditions) then we will find ourselves with ill-formed diagrams.
 We shall hope that the human makes few enough mistakes that they do not cancel themselves out on our small corpus.
 
+#### A simpler problem
+
 A first test, then is to see what happens to the 2-grams when we start to introduce the notion of a noun phrase.
 There are two obvious (to my eyes) candidates for noun phrases from our list of POS:
 
@@ -347,10 +349,13 @@ That is: Adjectives (`JJ`) and articles (`AT`) shall be considered as `N Nl`, th
 with the whole still being a noun phrase.
 "Confidence" here means that proportion of times the POS appears where these type assignments would give an easy join onto the next word.
 
-The file `Round3_temp1` contains these substitutions.
+#### Method
+
+We shall simply loop through each POS in the file and make the substitutionsgiven above.
+The file `Round3_repl` contains these substitutions.
 The next step is to assess how this affects our 2-grams:
 
-## Reassessing 2-grams
+#### Reassessing 2-grams
 
 We create the script `Round3b.py` by changing the inputs and outputs of `Round2.py`.
 here are some of the results:
