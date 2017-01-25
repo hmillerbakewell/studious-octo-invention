@@ -267,3 +267,134 @@ nn++in	42254
 ~~~
 
 Recall that we have replaced `,` with `COM` for legibility.
+The `nn`, `at` and `in` form a pleasing triangle of dependencies.
+The way to interpret the above data is that, for example, singular nouns (`nn`) occur
+152,522 times in the corpus.
+Of those 152,522 times they are preceded by an article (`at`) 48,393 times.
+This is roughly one time in three.
+
+Round 2 was mostly a proof of concept check; we are sure we can check for 2-grams,
+and the numbers of reported 2-grams are hgihg enough that I am hopeful for the next step to work.
+
+### Round 3: POS simplification
+
+In our conceptual spaces formalism we are more concerned with ``noun phrases'' than with nouns.
+A noun is an unadorned part of speech;
+a noun phrase is a noun that has been given extra information via the adjectives, articles etc. around it.
+Fundamentally: A noun is a valid noun phrase.
+Extra information about the noun (given by the words around it) is absorbed into the noun phrase.
+
+The standard example is that "an adjective" is a thing that takes a noun phrase and returns a noun phrase
+(the noun phrase it returns has more information in it, but is still a noun phrase.)
+We therefore attribute the type `N Nl` "Noun Noun-left" to an adjective:
+When placed left of a noun phrase `N` this becomes `N Nl N`, and we assume the `Nl` is joined to the `N` by a cup.
+I'll explain what I mean in the next paragraph.
+
+I have just used `l` without introducing it.
+Sadly this page will not include diagrams, but for a type `A` have `Al` as an `A`-input attached to the left-hand-side of a cup.
+`Ar` is an `A`-input attached to a right-hand-side of a cup, and plain `A` is an `A`-output.
+The eventual way we join all these up is quite probably going to be some horrifiec optimisation problem of joining everything up with the fewest wire-crossings possible.
+
+We want a statistics-informed (i.e. computer-only) method of determining which arities we should assign to which POS.
+I propose the following basic algorithm:
+
+0. Replace an POS with types for those that are known
+1. Try and infer new type information from the reduced sentences
+2. Repeat
+
+Obviously this is not nearly detailed enough yet, and it is point 1. that needs the work.
+One potential way to check whether something is a noun phrase is to see if the same sentence appears
+in another situation, but with a different noun phrase in place of the suspected noun phrase.
+This would require an enormous corpus for it to be viable, though.
+An alternative is to use some human input, recalling that once we have enough types in place we can then evaluate how well they work.
+That is; if a human choses the wrong type for a give POS (or does not allow for certain edge conditions) then we will find ourselves with ill-formed diagrams.
+We shall hope that the human makes few enough mistakes that they do not cancel themselves out on our small corpus.
+
+A first test, then is to see what happens to the 2-grams when we start to introduce the notion of a noun phrase.
+There are two obvious (to my eyes) candidates for noun phrases from our list of POS:
+
+~~~
+NN 	singular or mass noun
+NNS 	plural noun
+~~~
+
+This is pointedly ignoring:
+
+~~~
+NP 	proper noun or part of name phrase
+NPS 	plural proper noun
+~~~
+
+Which are all proper nouns (something I shall return to shortly), as well as:
+~~~
+NN$ 	possessive singular noun
+NNS$ 	possessive plural noun
+NP$ 	possessive proper noun
+NPS$ 	possessive plural proper noun
+~~~
+Which are possessives (again, something to return to shortly.)
+
+We shall now replace all instances in our corpus of `NN` and `NNS` with `N`, meaning "noun phrase".
+Since I have been staring at both the table of results from Round 2, and the paper by Bolt et al.,
+I shall make the entirely biased decision to implement the following two substitutions as well:
+
+~~~
+JJ -> N Nl      (Confidence: c.75%)
+AT -> N Nl      (Confidence: c.75%)
+~~~
+
+That is: Adjectives (`JJ`) and articles (`AT`) shall be considered as `N Nl`, that is things that join on to a noun phrase,
+with the whole still being a noun phrase.
+"Confidence" here means that proportion of times the POS appears where these type assignments would give an easy join onto the next word.
+
+The file `Round3_temp1` contains these substitutions.
+The next step is to assess how this affects our 2-grams:
+
+## Reassessing 2-grams
+
+We create the script `Round3b.py` by changing the inputs and outputs of `Round2.py`.
+here are some of the results:
+
+~~~
+POS	FREQ
+N	369522
+Nl	161976
+N++Nl	161976
+Nl++N	118728
+in++N	73935
+N++in	56758
+N++.	27527
+N++COM	25651
+N++N	21042
+pp$++N	14972
+cc++N	13723
+N++cc	13222
+COM++N	11357
+~~~
+
+The above results are those that involve the `N` (noun phrase) or `Nl` POS,
+and have frequency above 10,000.
+The best news here is that of the 161,976 introduced `Nl` types
+118,728 (>70%) of them are to the left of an `N` type, and therefore form an easy cup link.
+This is nowhere near 100%, but given we are working with journalistic material full of quotations and headlines,
+I fell this is still a respectable amount.
+
+Our top ten 2-grams are now:
+
+~~~
+POS	FREQ
+N	369522
+Nl	161976
+N++Nl	161976
+in	120572
+Nl++N	118728
+in++N	73935
+.	60638
+COM	58156
+N++in	56758
+~~~
+
+It should be noted at this point that a more methodical approach would be to see which 2-grams
+occur most frequently _as a proportion of their constituent 1-gram's frequencies_.
+Adjectives and articles had the happy fate of being in the top ten of our original list,
+while also being the "safest" POS to deal with.
