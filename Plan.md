@@ -403,3 +403,95 @@ It should be noted at this point that a more methodical approach would be to see
 occur most frequently _as a proportion of their constituent 1-gram's frequencies_.
 Adjectives and articles had the happy fate of being in the top ten of our original list,
 while also being the "safest" POS to deal with.
+
+### Round 4: Titles and proper nouns
+
+#### Things preceding proper nouns
+
+The following table list the top 95% of POS that are followed by proper nouns:
+
+~~~
+np++np	7652
+in++np	6616
+COM++np	3709
+Nl++np	2977
+cc++np	1950
+cs++np	1175
+nn-tl++np	1091
+N++np	739
+vbd++np	680
+vb++np	474
+(++np	427
+``++np	416
+vbn++np	287
+rb++np	264
+wrb++np	237
+vbg++np	198
+wdt++np	171
+cd++np	146
+bedz++np	116
+--++np	115
+
+Total   29440 (95%) out of 30889 2-grams
+~~~
+
+Here are the relevant parts of the POS lookup table:
+~~~
+All of the lines are implicity followed by " ++ Proper Noun"
+np++np	Proper Noun
+in++np	Preoposition
+COM++np	Comma
+Nl++np	_Noun phrase left cup_
+cc++np	Coordinating Conjunction
+cs++np	Subordinating Conjunction
+nn-tl++np	Noun (Title)
+N++np	Noun Phrase
+vbd++np	Verb (Past Tense)
+vb++np	Vern (Base)
+(++np	Open Bracket
+``++np	Open Quotation
+vbn++np	Verb (Past Participle)
+rb++np	Adverb
+wrb++np	Wh- Adverb
+vbg++np	Verb (Present Participle / Gerund)
+wdt++np	Wh- Determiner
+cd++np	Cardinal Number
+bedz++np	Was
+--++np	Dash
+~~~
+
+To my mind there is nothing in here to contradict the (preconceived, and not data-driven) idea
+that proper nouns should be treated as nouns.
+This is not to say that each `np` POS should be given type `N`;
+for example the name "Monty Python" is not of type `N N`,
+but should be treated as a whole.
+
+In a related vein, here are the top ten 2-grams where the right hand element is part of a title:
+
+~~~
+Nl++nn-tl	2826
+nn-tl++nn-tl	1913
+jj-tl++nn-tl	1757
+Nl++jj-tl	1564
+np-tl++nn-tl	1506
+nn-tl++in-tl	1189
+in++nn-tl	1129
+Nl++np-tl	875
+jj-tl++np-tl	874
+in++jj-tl	687
+
+Total   14320 out of 29254 of such 2-grams
+~~~
+
+Similarly I feel this supports the idea that "things in titles" should be treated as all one object.
+Foe example `The/at City/nn-tl Purchasing/vbg-tl Department/nn-tl` of line 10 should become
+`The <noun phrase>`.
+Again, this has been done by eye, and with my own biases in place.
+
+#### Idea
+
+Proper nouns and titles should be treated as single `N` types.
+
+#### Method
+
+Merge proper nouns and titles (sentence by sentence) so that each continuous block of such tags is replaced with a single `N` type.
