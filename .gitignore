@@ -1,3 +1,5 @@
 brown/*
 data_files/*
 venv/*
+.vscode/
+*.pyc
