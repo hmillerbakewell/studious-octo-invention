@@ -8,7 +8,7 @@ Get frequency data on 2-grams
 
 import Round2
 
-INPUT = open("../data_files/Round3_repl", "r")
+INPUT = open("../data_files/Round3", "r")
 OUTPUT = open("../data_files/Round3_2grams", "w")
 
 Round2.bigram_data(INPUT, OUTPUT)

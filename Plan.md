@@ -143,11 +143,11 @@ cat $(ls | grep '^c...$') > MERGE_ALL
 (Which places all the data from the segments into a fille called `MERGE_ALL`.)
 
 ~~~Bash
-grep --invert-match '^$' MERGE_ALL > MERGE_ALL_NO_BLANKS
+grep --invert-match '^$' MERGE_ALL > WORDS_AND_POS
 ~~~
 
-The file `MERGE_ALL_NO_BLANKS` now contains each sentence from the entire corpus, one to a line.
-Finally, we moved the `MERGE_ALL_NO_BLANKS` file into a separate /data_files folder.
+The file `WORDS_AND_POS` now contains each sentence from the entire corpus, one to a line.
+Finally, we moved the `WORDS_AND_POS` file into a separate /data_files folder.
 
 The structure currently looks like:
 
@@ -158,7 +158,7 @@ The structure currently looks like:
  + [etc.]
 /data_files/
  + MERGE_ALL
- + MERGE_ALL_NO_BLANKS
+ + WORDS_AND_POS
  + TAG_LOOKUP
 /scripts/
 .gitignore

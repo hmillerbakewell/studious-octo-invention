@@ -6,12 +6,12 @@ Create frequency histograms for each POS
 # Round 1
 
 
-import time
+# import time
 import numpy
 
 def create_hist(infile, outfile):
     "Create histogram data in outfile, from data in infile"
-    start_time = time.time()
+    # start_time = time.time()
 
     pos_sentence_length = {}
     max_sentence_length = 0
@@ -48,12 +48,16 @@ def create_hist(infile, outfile):
 
     output += "\n" # Empty line to denote end of a data chunk
 
-    output += "Sentences with hyphenated tags: " + str(sentences_with_htags) + "\n"
+    # output += "Sentences with hyphenated tags: " + str(sentences_with_htags) + "\n"
 
 
-    end_time = time.time()
-    output += "Time taken: " + str(end_time-start_time) + " seconds\n"
+    # end_time = time.time()
+    # output += "Time taken: " + str(end_time-start_time) + " seconds\n"
 
     outfile.write(output)
+    outfile.close()
+    infile.close()
 
-create_hist(open("../data_files/POS_ONLY", "r"), open("../data_files/Round1", "w"))
+INPUT = open("../data_files/POS_ONLY", "r")
+OUTPUT = open("../data_files/Round1", "w")
+create_hist(INPUT, OUTPUT)

@@ -8,7 +8,7 @@ Create a file containing only the POS tags from the corpus
 import re # Regular expressions
 
 
-manb = open("../data_files/MERGE_ALL_NO_BLANKS","r")
+manb = open("../data_files/WORDS_AND_POS","r")
 outfile = open("../data_files/POS_ONLY","w")
 output = ""
 

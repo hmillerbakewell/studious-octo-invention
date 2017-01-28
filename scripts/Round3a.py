@@ -33,7 +33,7 @@ def pos_replace(infile, outfile, replacements):
 
 
 INPUT = open("../data_files/POS_ONLY", "r")
-OUTPUT = open("../data_files/Round3_repl", "w")
+OUTPUT = open("../data_files/Round3", "w")
 REPLACE = {
     "nn" : "N",
     "nns": "N",
