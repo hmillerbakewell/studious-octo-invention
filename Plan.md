@@ -495,3 +495,13 @@ Proper nouns and titles should be treated as single `N` types.
 #### Method
 
 Merge proper nouns and titles (sentence by sentence) so that each continuous block of such tags is replaced with a single `N` type.
+
+#### Result
+
+The script will happily group titles and proper nouns together.
+In my haste, however, I had forgotten that title-words can also be, for example, possessives.
+
+#### Amendment
+
+I have commented out the relevant code for grouping together title-words.
+Singular and plural (but not possessive forms of) proper nouns still seem amenable to this kind of grouping.
