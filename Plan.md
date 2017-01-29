@@ -594,7 +594,7 @@ n_disparity = abs(n_count - n_inv_count)
 s_disparity = abs(s_count - 1 - s_inv_count)
 return s_disparity + n_disparity
 ~~~
-The function counts the number of `N` and compares it to the number of both `Nr` and `Ns` (and similarly for `S`.)
+The function counts the number of `N` and compares it to the number of both `Nr` and `Nl` (and similarly for `S`.)
 The disparity between them is then used to determine how far off reducible the sentence is.
 Note the extra `-1` in the `s_disparity` measure; this is to account for the "ideal sentence" having type `S`.
 
@@ -618,23 +618,23 @@ This is not going to be feasible to check deterministically.
 Instead, we shall focus on the most common POS (having removed `,` and `.`):
 ~~~
 POS     Cumulative Freq.
-nn	    0.15
-in	    0.26
-at	    0.35
-jj	    0.42
-nns	    0.47
-cc	    0.50
-rb	    0.54
-np	    0.57
-vb	    0.60
-vbn	    0.63
-vbd	    0.66
-cs	    0.68
-pps	    0.70
-vbg	    0.71
-pp$	    0.73
-ppss	    0.74
-to	    0.76
+nn      0.15
+in      0.26
+at      0.35
+jj      0.42
+nns     0.47
+cc      0.50
+rb      0.54
+np      0.57
+vb      0.60
+vbn     0.63
+vbd     0.66
+cs      0.68
+pps     0.70
+vbg     0.71
+pp$     0.73
+ppss    0.74
+to      0.76
 ~~~
 As you can see in the table above:
 If we just take the two most common POS then we will affect one quarter of all available words.
