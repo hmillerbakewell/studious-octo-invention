@@ -654,6 +654,7 @@ A lower score means that the sentence is better balanced.
 # Round 7: Optimisation
 
 We are currently in possession of:
+
 1. A way to assign types to POS
 2. A way to score that assignment
 
@@ -685,3 +686,12 @@ My rationale for doing so now is that currently the computer has no notion of wh
 except that it is better if a sentence has type `S`.
 I will take this opportunity to fix the types of `nn` and `nns` as `N`.
 The `fixed` variable inside the `simple_annealing_v1` function holds this information.
+
+## Hopes
+
+Having set off `python Round7.py > ../data_files/Round7` over two hours ago I should take a moment to say what I hope to see from results.
+It will almost certainly not be what I end up seeing, but you never know.
+The hopes are:
+
+ - Verbs will contribute to `S` and absorb `N`
+ - Adjectives and prepositions will be `N`-balanced
