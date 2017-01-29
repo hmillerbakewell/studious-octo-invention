@@ -262,3 +262,35 @@ def replace_random_types_and_score(infilename, outfilename, count=-1):
     outfile = open(DATA+outfilename, "a")
     outfile.write(output+"\n")
     outfile.close()
+
+def simple_annealing_v1(infilename, num_pos, rounds):
+    "Apple the simple annealing algorithm to the lazy measure and balanced type-gen."
+    results = []
+    fixed = {"nn": "N", "nns": "N"}
+    replacements = random_replacements(num_pos, fixed)
+    initial_heat = 500000
+    best_score = 500000
+    threshold = lambda x: initial_heat * pow(2, -10*(x/rounds))
+    for i in range(1, rounds):
+        candidate_swaps = random_replacements(num_pos, fixed)
+        new_replace = replacements
+        rand_pos = random.choice(replacements.keys())
+        new_replace[rand_pos] = candidate_swaps[rand_pos]
+        infile = open(DATA+infilename, "r")
+        score = 0
+        for line in infile.readlines():
+            output = ""
+            line_pos = line.strip().split(" ")
+            for pos in line_pos:
+                if pos in new_replace:
+                    output += new_replace[pos] + " "
+                else:
+                    output += pos + " "
+            score += lazy_measure_sentence(output)
+        infile.close()
+        keep_change = score < (best_score + threshold(i))
+        if keep_change:
+            replacements = new_replace
+            best_score = min(score, best_score)
+        results += [[score, keep_change, rand_pos, str(new_replace)]]
+    return results

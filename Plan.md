@@ -650,3 +650,38 @@ SCORE	nn	in
 ~~~
 The top line indicates how each POS was typed to result in the stated score.
 A lower score means that the sentence is better balanced.
+
+# Round 7: Optimisation
+
+We are currently in possession of:
+1. A way to assign types to POS
+2. A way to score that assignment
+
+These are all we need to automate the process of choosing an assignment.
+It is worth stating again that the quality of the outcome of this process will depend on
+    both the quality of the scoring system and the optimisation method chosen.
+I am not an expert on optimisation methods, but Simple Annealing seems a suitable choice.
+Simple annealing is similar to a standard descent optimisation:
+For descent one makes a small change, and if that results in a better score the change is kept.
+For simple annealing one makes a small change, and if that change is no worse than a computed threshold it is kept.
+The threshold diminishes towards zero over time.
+The reason for the name is that it is similar to how crystals form on cooling:
+While warm they can jump around into different configurations,
+but as they cool they have less energy available to overcome the forces keeping them in place.
+
+## Simple Annealing parameters
+
+I am not in a poistion to advise on how to best choose the parameters.
+Here are the ones I have been using:
+ - Initial temperature: 500000
+ - Number of rounds: 1000
+ - Number of POS: 10
+
+## Fixing N
+
+Our most basic assumption is that nouns are of type `N`.
+We have not yet insisted on this in our optimisation scheme.
+My rationale for doing so now is that currently the computer has no notion of what `N` and `S` are,
+except that it is better if a sentence has type `S`.
+I will take this opportunity to fix the types of `nn` and `nns` as `N`.
+The `fixed` variable inside the `simple_annealing_v1` function holds this information.
