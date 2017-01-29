@@ -245,6 +245,9 @@ It was at this point that I found the nltk python library.
 It does many of the things I want, but I don't know if it will do all of them.
 Certainly most of the things I intend to investigate could be built on top of nltk.
 
+We will use the word "bigram" to mean not just 2-grams but also 1-grams.
+In all cases it will be useful to know not only the connections but the total number of potential connections.
+
 #### Method
 
 We loop through each sentence, and keep track of each occurence of a 1-gram or 2-gram.
@@ -274,7 +277,7 @@ Of those 152,522 times they are preceded by an article (`at`) 48,393 times.
 This is roughly one time in three.
 
 Round 2 was mostly a proof of concept check; we are sure we can check for 2-grams,
-and the numbers of reported 2-grams are hgihg enough that I am hopeful for the next step to work.
+and the numbers of reported 2-grams are high enough that I am hopeful for the next step to work.
 
 ### Round 3: POS simplification
 
@@ -357,9 +360,8 @@ The next step is to assess how this affects our 2-grams:
 
 #### Reassessing 2-grams
 
-We create the script `Round3b.py` by changing the inputs and outputs of `Round2.py`.
-here are some of the results:
-
+The following results are those that involve the `N` (noun phrase) or `Nl` POS,
+and have frequency above 10,000.
 ~~~
 POS	FREQ
 N	369522
@@ -377,8 +379,6 @@ N++cc	13222
 COM++N	11357
 ~~~
 
-The above results are those that involve the `N` (noun phrase) or `Nl` POS,
-and have frequency above 10,000.
 The best news here is that of the 161,976 introduced `Nl` types
 118,728 (>70%) of them are to the left of an `N` type, and therefore form an easy cup link.
 This is nowhere near 100%, but given we are working with journalistic material full of quotations and headlines,
@@ -505,3 +505,45 @@ In my haste, however, I had forgotten that title-words can also be, for example,
 
 I have commented out the relevant code for grouping together title-words.
 Singular and plural (but not possessive forms of) proper nouns still seem amenable to this kind of grouping.
+
+## Round 5: Possessives
+
+Possessives are probably the next easiest to guess the type of:
+A possessive is presumably going to be part of the following noun phrase,
+and not interact directly with the preceding words.
+The exception to this is the possessive wh- pronoun "whose",
+that joins a preceding noun phrase to a following clause.
+Again, this is entirely subject to my own biases.
+
+#### Method
+
+Same as for Round 3, with the following replacements:
+~~~Python
+POSSESSIVES_REDUCE = {
+    r"nn$" : "N Nl",    # possessive singular noun
+    r"nns$" : "N Nl",   # possessive plural noun
+    r"np$" : "N Nl",    # possessive proper noun
+    r"nps$" : "N Nl",   # possessive plural proper noun
+    r"pn$" : "N Nl",    # possessive nominal pronoun
+    r"pp$" : "N Nl",    # possessive personal pronoun (my, our)
+    r"pp$$" : "N Nl",   # second (nominal) possessive pronoun (mine, ours)
+    r"prp$" : "N Nl",   # possessive pronoun
+    r"wp$" : "Nr N Sl"  # possessive wh- pronoun (whose)
+}
+~~~
+
+## Result
+
+Here is the bigram data relevant to `N` and `Nl` types after rounds three and five.
+~~~
+	Round3	Round5	Diff.
+N	369522	391239	21717
+Nl	161976	183441	21465
+N++Nl	161976	183441	21465
+Nl++N	118728	138659	19931
+
+~~~
+
+We have introduced 21465 `Nl`s and 19931 `Nl++N` links.
+Assuming all the links are from the new `Nl`s, that means that over 90% of introduced `Nl`s are next to an `N`.
+I take this as validation that changing possessive POS (except "whose") to `N Nl` was correct.
