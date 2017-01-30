@@ -714,3 +714,19 @@ I also gave a bonus to those sentences that could reduce to the form `S`.
 The Initial Temperature of the annealing was then adjusted accordingly.
 
  - Initial temperature: 10000000
+
+Here is the lowest-scoring assignment result after running the process on 45 most frequent POS for 10000 rounds:
+
+~~~Python
+{'vb': 'Nl ', 'vbg': 'Nl ', 'cc': 'Sl', 'np$': 'Nl S', 'ppo': 'S', 'hvd': 'Sl', 'ppss': 'S', 'cd': 'Nl ', 'pps': 'N S', 'ap': 'Nl ', 'hvz': 'Sl', 'at': 'Nl S', 'in': 'Sl', 'cs': 'N ', 'nns': 'N', 'np-tl': 'Sl', 'rp': 'N ', 'nn': 'N', '*': 'Sl', 'abn': 'S', 'to': 'N ', 'rb': 'S', 'np': 'S', 'pn': 'N Sl', 'be': 'S', 'pp$': 'Nl ', 'nn-tl': 'N ', 'hv': 'S', 'wps': 'N S', 'jj': 'Nl S', 'bedz': 'Sl', 'wrb': 'N ', 'dt': 'S', 'md': 'Sl', 'dti': 'S', 'ben': 'Sl', 'vbd': 'Nl Sl', 'vbn': 'Nl ', 'bed': 'Sl', 'bez': 'Sl', 'wdt': 'N ', 'ber': 'Sl', 'vbz': 'Sl', 'jj-tl': 'N ', 'ql': 'Sl'}
+~~~
+
+It has a score of: `671211`
+
+Here is a chart of the score of each round:
+
+![Round7Scores](./media/type-assignment-scores-round7.png "Type-assignment scores")
+
+Allow me to state the above more formally.
+**Under the assumption that our score system selects "good" type-assignments,
+the above type-assignment should be a relatively good type-assignment.**

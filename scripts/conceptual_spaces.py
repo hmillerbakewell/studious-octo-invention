@@ -210,13 +210,13 @@ def random_type_balanced():
     n_balance = random.randint(-1, 1) # For now
     s_balance = random.randint(-1, 1) # For now
     n_part = {
-        "-1": "Nr N Nl",
+        "-1": "Nl",
         "0": "",
         "1": "N",
         "2": "N Nl"
     }[str(n_balance)]
     s_part = {
-        "-1": "Sr S Sl",
+        "-1": "Sl",
         "0": "",
         "1": "S",
         "2": "S Sl"
