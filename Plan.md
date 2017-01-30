@@ -674,6 +674,7 @@ but as they cool they have less energy available to overcome the forces keeping 
 
 I am not in a poistion to advise on how to best choose the parameters.
 Here are the ones I have been using:
+
  - Initial temperature: 500000
  - Number of rounds: 1000
  - Number of POS: 10
@@ -695,3 +696,21 @@ The hopes are:
 
  - Verbs will contribute to `S` and absorb `N`
  - Adjectives and prepositions will be `N`-balanced
+
+## Results
+
+The initial round of results were underwhelmeing,
+all the more so when I realised that I had forgotten about Phython's convention for quotienting by Ints and Floats.
+(Also some issues with deep and shallow copies.)
+In bugfixing that particular issue I did realise that my sentence-measure would favour "balanced" tags,
+i.e. those that do not contribute to the overall number of `S` or `N` types.
+Not only that, but the system for generating random types was also favouring such balanced positions.
+I therefore alterred the type-generator to distribute the types evenly accross how they affect balance.
+
+Since I was playing around with the type-generation I had another look at the weighting system too.
+I decided to alter the weighting so that it grew in powers of `S` and `N`.
+(The sentence struture `S S S S` is a lot more than four times worse than `S`.)
+I also gave a bonus to those sentences that could reduce to the form `S`.
+The Initial Temperature of the annealing was then adjusted accordingly.
+
+ - Initial temperature: 10000000

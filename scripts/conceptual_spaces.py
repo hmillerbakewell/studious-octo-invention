@@ -180,6 +180,7 @@ def sentence_reduce(sentence, patterns):
 def lazy_measure_sentence(sentence):
     "Compare the counts of types to assess sentence score"
 
+    weight = 0
     pos = sentence.split()
     n_inv_count = pos.count("Nl") + pos.count("Nr")
     n_count = pos.count("N")
@@ -188,7 +189,11 @@ def lazy_measure_sentence(sentence):
     n_disparity = abs(n_count - n_inv_count)
     s_disparity = abs(s_count - 1 - s_inv_count)
     # The "ideal" sentence reduces to a single S type
-    return s_disparity + n_disparity
+    # huge advantage to finishing with only one S and all N matched
+    if n_disparity == 0 and s_disparity == 0:
+        weight -= 10
+    weight += pow(s_disparity, 2) + pow(n_disparity, 2)
+    return weight
 
 def lazy_measure(infilename):
     "Apply the lazy measure to each sentence in the file"
@@ -202,19 +207,19 @@ def lazy_measure(infilename):
 
 def random_type_balanced():
     "Return a random type, based purely on balance for now."
-    n_balance = random.randint(-1, 2)
-    s_balance = random.randint(-1, 2)
+    n_balance = random.randint(-1, 1) # For now
+    s_balance = random.randint(-1, 1) # For now
     n_part = {
         "-1": "Nr N Nl",
-        "0": "N Nl",
+        "0": "",
         "1": "N",
-        "2": ""
+        "2": "N Nl"
     }[str(n_balance)]
     s_part = {
         "-1": "Sr S Sl",
-        "0": "S Sl",
+        "0": "",
         "1": "S",
-        "2": ""
+        "2": "S Sl"
     }[str(s_balance)]
     if n_part == "" and s_part == "":
         return random_type_balanced()
@@ -268,15 +273,17 @@ def simple_annealing_v1(infilename, num_pos, rounds):
     results = []
     fixed = {"nn": "N", "nns": "N"}
     replacements = random_replacements(num_pos, fixed)
-    initial_heat = 500000
-    best_score = 500000
+    initial_heat = 10000000
+    best_score = 10000000
     threshold = lambda x: initial_heat * pow(2, -10*(x/(1.0*rounds)))
     infile = open(DATA+infilename, "r")
     indata = infile.read()
     infile.close()
     for i in range(1, rounds):
         candidate_swaps = random_replacements(num_pos, fixed)
-        next_replace = replacements
+        next_replace = {}
+        for key in replacements:
+            next_replace[key] = replacements[key]
         rand_pos = random.choice(replacements.keys())
         next_replace[rand_pos] = candidate_swaps[rand_pos]
         score = 0
@@ -291,6 +298,8 @@ def simple_annealing_v1(infilename, num_pos, rounds):
             score += lazy_measure_sentence(output)
         keep_change = (score < (best_score + threshold(i)))
         if keep_change:
+            for key in replacements:
+                replacements[key] = next_replace[key]
             replacements = next_replace
             best_score = min(score, best_score)
         results += [[score, keep_change, rand_pos, str(next_replace)]]
