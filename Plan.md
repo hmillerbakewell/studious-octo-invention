@@ -730,3 +730,34 @@ Here is a chart of the score of each round:
 Allow me to state the above more formally.
 **Under the assumption that our score system selects "good" type-assignments,
 the above type-assignment should be a relatively good type-assignment.**
+
+# Round 8: Reassessing assumptions
+
+There is a fine line between "I didn't get the results I wanted" and "there are imperfections in the system."
+Hopefully this section will fall firmly into the latter category.
+The graph printed in Round 7 shows that while there are some type-assignments that are definitely "bad",
+there are a huge number of different type-assignments that have very similar scores.
+Our hope would, of course, be to have a clear winner at this stage.
+Since we do not have this, but have assured ourselves that the framework is working,
+we should take time to reassess our assumptions:
+
+1. Our data is fit for purpose
+2. Our scoring system is fit for purpose
+
+## Checking our data
+
+I am happy to accept that Brown have down a good job on assigning the POS correctly.
+My concern is based on the language used therein:
+Do I feel they qualify as full sentences?
+
+`Round8.py` pulls example sentences from the corpus and prints them out, along with their POS and scores using the example assignment above.
+It doesn't make for very happy reading.
+Not only do I disagree with the type-assignment I also find situations, such as lists, answers, and incomplete statements,
+where this approach is expected to fail.
+
+# Conclusion
+
+The Conceptual Spaces formalism remains a formalism I have faith in the usefulness of,
+however I no longer have faith in this method of extracting typing data.
+The Brown Corpus gives real-world examples of natural language, and the methods here are simply not up to the task of extracting which POS correspond to which types.
+Perhaps we should even conclude that the types of Conceptual Spaces and standard Parts Of Speech are only weakly linked.

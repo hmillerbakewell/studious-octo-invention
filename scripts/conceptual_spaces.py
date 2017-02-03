@@ -269,7 +269,7 @@ def replace_random_types_and_score(infilename, outfilename, count=-1):
     outfile.close()
 
 def simple_annealing_v1(infilename, num_pos, rounds):
-    "Apple the simple annealing algorithm to the lazy measure and balanced type-gen."
+    "Apply the simple annealing algorithm to the lazy measure and balanced type-gen."
     results = []
     fixed = {"nn": "N", "nns": "N"}
     replacements = random_replacements(num_pos, fixed)
@@ -304,3 +304,33 @@ def simple_annealing_v1(infilename, num_pos, rounds):
             best_score = min(score, best_score)
         results += [[score, keep_change, rand_pos, str(next_replace)]]
     return results
+
+def example_sentences():
+    "Pulls every 999th sentence from the data and evaluates it."
+    example_pos = {'vb': 'Nl ', 'vbg': 'Nl ', 'cc': 'Sl', 'np$': 'Nl S', 'ppo': 'S', 'hvd': 'Sl', 'ppss': 'S', 'cd': 'Nl ', 'pps': 'N S', 'ap': 'Nl ', 'hvz': 'Sl', 'at': 'Nl S', 'in': 'Sl', 'cs': 'N ', 'nns': 'N', 'np-tl': 'Sl', 'rp': 'N ', 'nn': 'N', '*': 'Sl', 'abn': 'S', 'to': 'N ', 'rb': 'S', 'np': 'S', 'pn': 'N Sl', 'be': 'S', 'pp$': 'Nl ', 'nn-tl': 'N ', 'hv': 'S', 'wps': 'N S', 'jj': 'Nl S', 'bedz': 'Sl', 'wrb': 'N ', 'dt': 'S', 'md': 'Sl', 'dti': 'S', 'ben': 'Sl', 'vbd': 'Nl Sl', 'vbn': 'Nl ', 'bed': 'Sl', 'bez': 'Sl', 'wdt': 'N ', 'ber': 'Sl', 'vbz': 'Sl', 'jj-tl': 'N ', 'ql': 'Sl'}
+    infile = open(DATA+"WORDS_AND_POS", "r")
+    indata = infile.read()
+    infile.close()
+    output = ""
+    for line in indata.splitlines()[::999]:
+        words_and_pos = line.strip().split(" ")
+        word_list = []
+        pos_list = []
+        if len(words_and_pos) > 2:
+            output += "------\n"
+            output += line + "\n"
+            for word_pos_pair in words_and_pos:
+                split = word_pos_pair.split("/")
+                word_list += [split[0]]
+                pos_list += [split[1]]
+            replaced_pos = ""
+            for pos in pos_list:
+                if pos in example_pos:
+                    replaced_pos += " " + example_pos[pos]
+                else:
+                    replaced_pos += " " + pos
+            output += "Replaced: " + replaced_pos + "\n"
+            output += "Score: " + str(lazy_measure_sentence(replaced_pos)) + "\n"
+
+
+    return output
